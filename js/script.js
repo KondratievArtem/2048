@@ -1,9 +1,9 @@
-import { getGridLayout } from './grid.js';
+import { grid } from './grid.js';
 import { tile } from './tile.js';
 
 const gridField = document.getElementById('grid-content');
 
-getGridLayout(gridField);
+grid(gridField);
 
 tile(gridField);
 tile(gridField);

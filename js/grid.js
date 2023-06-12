@@ -1,10 +1,11 @@
-const CELL_SIZE = 4,
-	COUNT_CELL = CELL_SIZE * CELL_SIZE;
+import { cell } from './cell.js';
 
-export function getGridLayout(gridField) {
+const GRID_SIZE = 4,
+	COUNT_CELL = GRID_SIZE * GRID_SIZE;
+
+export function grid(gridField) {
+	let cells = [];
 	for (let i = 0; i < COUNT_CELL; i++) {
-		const cellElement = document.createElement('div');
-		cellElement.classList.add('cell');
-		gridField.append(cellElement);
+		cells.push(cell(gridField));
 	}
 }
