@@ -6,4 +6,3 @@ const gridField = document.getElementById('grid-content');
 grid(gridField);
 
 tile(gridField);
-tile(gridField);

@@ -6,6 +6,9 @@ const GRID_SIZE = 4,
 export function grid(gridField) {
 	let cells = [];
 	for (let i = 0; i < COUNT_CELL; i++) {
-		cells.push(cell(gridField));
+		cells.push(cell(gridField, i % GRID_SIZE, Math.floor(i / GRID_SIZE))());
 	}
+	console.log(cells);
 }
+
+export function getRandomCell() {}
