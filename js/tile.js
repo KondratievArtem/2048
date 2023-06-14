@@ -1,8 +1,10 @@
-export function tile(cellElement, x, y) {
-	const tile = document.createElement('div');
-	tile.classList.add('tile');
-	tile.textContent = 2;
-	tile.style.setProperty('--x', x);
-	tile.style.setProperty('--y', y);
-	cellElement.append(tile);
+class Tile {
+	constructor(gameBoard) {
+		this.tile = document.createElement('div');
+		this.tile.classList.add('tile');
+		this.tile.textContent = 2;
+		gameBoard.append(this.tile);
+	}
 }
+
+export default Tile;

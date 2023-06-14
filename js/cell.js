@@ -1,11 +1,11 @@
-import { tile } from './tile.js';
-
-export function cell(gridField, x, y) {
-	return () => {
-		const cellElement = document.createElement('div');
-		cellElement.classList.add('cell');
-		gridField.append(cellElement);
-		tile(x, y);
-		return gridField;
-	};
+class Cell {
+	constructor(gameBoard, x, y) {
+		this.x = x;
+		this.y = y;
+		this.cellElement = document.createElement('div');
+		this.cellElement.classList.add('cell');
+		gameBoard.append(this.cellElement);
+	}
 }
+
+export default Cell;

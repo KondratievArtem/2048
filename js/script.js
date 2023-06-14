@@ -1,8 +1,8 @@
-import { grid } from './grid.js';
-import { tile } from './tile.js';
+import Grid from './Grid.js';
+import Tile from './Tile.js';
 
-const gridField = document.getElementById('grid-content');
+const gameBoard = document.getElementById('grid-content');
 
-grid(gridField);
+const grid = new Grid(gameBoard);
 
-tile(gridField);
+new Tile(gameBoard);
