@@ -14,6 +14,12 @@ class Grid {
 			this.cells.push(new Cell(gameBoard, x, y));
 		}
 	}
+
+	getRandomEmptyCell() {
+		const emptyCell = this.cells.filter((cell) => cell.isEmpty());
+		const indexCell = Math.floor(Math.random() * emptyCell.length);
+		return emptyCell[indexCell];
+	}
 }
 
 export default Grid;
