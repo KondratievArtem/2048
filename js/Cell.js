@@ -1,0 +1,11 @@
+class Cell {
+	constructor(layout, x, y) {
+		this.x = x;
+		this.y = y;
+		this.tegElement = document.createElement('div');
+		this.tegElement.classList.add('cell');
+		layout.append(this.tegElement);
+	}
+}
+
+export default Cell;
