@@ -12,8 +12,33 @@ class Cell {
 		this.linkedTile = tile;
 	}
 
+	unlinkTile() {
+		this.linkedTile = null;
+	}
 	isEmpty() {
 		return !this.linkedTile;
+	}
+
+	linkTileForMarge(tile) {
+		tile.setXY(this.x, this.y);
+		this.linkedTileForMarge = tile;
+	}
+	unlinkTileForMarge() {
+		this.linkedTileForMarge = null;
+	}
+
+	hasTileForMarge() {
+		return !!this.linkedTileForMarge;
+	}
+
+	cenAccept(newTile) {
+		return this.isEmpty() || (!this.hasTileForMarge() && this.linkedTile.value === newTile.value);
+	}
+
+	margeTile() {
+		this.linkedTile.setValue(this.linkedTile.value + this.linkedTileForMarge.value);
+		this.linkedTileForMarge.removeFromDOM();
+		this.unlinkTileForMarge();
 	}
 }
 
