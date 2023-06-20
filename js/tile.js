@@ -19,6 +19,17 @@ class Tile {
 	removeFromDOM() {
 		this.tile.remove();
 	}
+
+	witeForTransition() {
+		return new Promise((resolve) => {
+			this.tile.addEventListener('transitionend', resolve, { once: true });
+		});
+	}
+	witeForAnimation() {
+		return new Promise((resolve) => {
+			this.tile.addEventListener('animationend', resolve, { once: true });
+		});
+	}
 }
 
 export default Tile;

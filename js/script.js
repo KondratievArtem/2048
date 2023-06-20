@@ -13,54 +13,68 @@ function game() {
 	window.addEventListener('keyup', runGame, { once: true });
 }
 
-function runGame(e) {
+async function runGame(e) {
 	switch (e.key) {
 		case 'ArrowUp':
-			moveUp();
+			if (!cenMoveUp()) return game();
+			await moveUp();
 			break;
+
 		case 'ArrowDown':
-			moveDown();
+			if (!cenMoveDown()) return game();
+			await moveDown();
 			break;
+
 		case 'ArrowLeft':
-			moveLeft();
+			if (!cenMoveLeft()) return game();
+			await moveLeft();
 			break;
+
 		case 'ArrowRight':
-			moveRight();
+			if (!cenMoveRight()) return game();
+			await moveRight();
 			break;
 
 		default:
 			game();
 			return;
 	}
-
-	grid.getRandomEmptyCell().linkTile(new Tile(gameBoard));
-	console.log(grid.cells);
+	const newTile = new Tile(gameBoard);
+	grid.getRandomEmptyCell().linkTile(newTile);
 	game();
+
+	if (!cenMoveUp() && !cenMoveDown() && !cenMoveLeft() && !cenMoveRight()) {
+		await newTile.witeForAnimation();
+		alert('game one');
+	}
 }
 
-function moveUp() {
-	slideTiles(grid.cellsGroupedByColumn);
+async function moveUp() {
+	await slideTiles(grid.cellsGroupedByColumn);
 }
 
-function moveDown() {
-	slideTiles(grid.cellsGroupedReverseByColumn);
+async function moveDown() {
+	await slideTiles(grid.cellsGroupedReverseByColumn);
 }
-function moveLeft() {
-	slideTiles(grid.cellsGroupedByRow);
+async function moveLeft() {
+	await slideTiles(grid.cellsGroupedByRow);
 }
-function moveRight() {
-	slideTiles(grid.cellsGroupedReverseByRow);
-}
-
-function slideTiles(groupCells) {
-	groupCells.forEach((group) => slideTilesInGroup(group));
-
-	// grid.cells.forEach((cell) => {
-	// 	cell.hasTileForMarge() && cell.margeTile();
-	// });
+async function moveRight() {
+	await slideTiles(grid.cellsGroupedReverseByRow);
 }
 
-function slideTilesInGroup(group) {
+async function slideTiles(groupCells) {
+	const promises = [];
+	groupCells.forEach((group) => slideTilesInGroup(group, promises));
+
+	await Promise.all(promises);
+
+	grid.cells.forEach((cell) => {
+		cell.hasTileForMarge() && cell.margeTile();
+	});
+}
+
+async function slideTilesInGroup(group, promises) {
 	for (let i = 1; i < group.length; i++) {
 		if (group[i].isEmpty()) continue;
 
@@ -75,6 +89,8 @@ function slideTilesInGroup(group) {
 
 		if (!targetCell) continue;
 
+		await promises.push(cellWithTile.linkedTile.witeForTransition());
+
 		if (targetCell.isEmpty()) {
 			targetCell.linkTile(cellWithTile.linkedTile);
 		} else {
@@ -83,4 +99,31 @@ function slideTilesInGroup(group) {
 
 		cellWithTile.unlinkTile();
 	}
+}
+
+function cenMoveUp() {
+	return cenMove(grid.cellsGroupedByColumn);
+}
+function cenMoveDown() {
+	return cenMove(grid.cellsGroupedReverseByColumn);
+}
+function cenMoveLeft() {
+	return cenMove(grid.cellsGroupedByRow);
+}
+function cenMoveRight() {
+	return cenMove(grid.cellsGroupedReverseByRow);
+}
+
+function cenMove(groupedCell) {
+	return groupedCell.some((group) => cenMoveInGroup(group));
+}
+
+function cenMoveInGroup(group) {
+	return group.some((cell, index) => {
+		if (index === 0) return false;
+		if (cell.isEmpty()) return false;
+
+		const targetCell = group[index - 1];
+		return targetCell.cenAccept(cell.linkedTile);
+	});
 }
