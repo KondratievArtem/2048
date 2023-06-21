@@ -9,6 +9,11 @@ class Tile {
 	value(value) {
 		this.tileElement.textContent = value;
 	}
+
+	setXY(x, y) {
+		this.tileElement.style.setProperty('--x', x);
+		this.tileElement.style.setProperty('--y', y);
+	}
 }
 
 export default Tile;

@@ -5,5 +5,5 @@ const board = document.getElementById('grid-board');
 
 const grid = new Grid(board);
 
-const tile = new Tile(board);
-const tile2 = new Tile(board);
+grid.cellRandomEmpty().linkTile(new Tile(board));
+grid.cellRandomEmpty().linkTile(new Tile(board));
