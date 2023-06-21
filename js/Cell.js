@@ -15,6 +15,14 @@ class Cell {
 	isEmpty() {
 		return !this.linkedTile;
 	}
+
+	cenAccept(tile) {
+		return this.isEmpty() || this.linkedTile.value === tile.value;
+	}
+
+	unlinkTile() {
+		this.linkedTile = null;
+	}
 }
 
 export default Cell;

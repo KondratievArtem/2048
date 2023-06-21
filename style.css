@@ -45,8 +45,8 @@ body {
 	--x: 0;
 	--y: 0;
 	position: absolute;
-	top: calc(var(--x) * (var(--padding-10) + var(--tile-size)));
-	left: calc(var(--y) * (var(--padding-10) + var(--tile-size)));
+	top: calc(var(--y) * (var(--padding-10) + var(--tile-size)));
+	left: calc(var(--x) * (var(--padding-10) + var(--tile-size)));
 	width: var(--tile-size);
 	height: var(--tile-size);
 	margin: var(--padding-10);
