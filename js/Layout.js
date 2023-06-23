@@ -1,43 +1,43 @@
 import Cell from './Cell.js';
 
-const CELL_SIZE = 4;
-const GRID_SIZE = CELL_SIZE * CELL_SIZE;
-
+const cellSize = 4;
+const tablaSize = cellSize * cellSize;
 class Grid {
-	constructor(layout) {
+	constructor(board) {
 		this.cells = [];
-		for (let i = 0; i < GRID_SIZE; i++) {
-			const x = i % CELL_SIZE;
-			const y = Math.floor(i / CELL_SIZE);
-			this.cells.push(new Cell(layout, x, y));
+		for (let i = 0; i < tablaSize; i++) {
+			const axisX = Math.floor(i % cellSize);
+			const axisY = Math.floor(i / cellSize);
+
+			this.cells.push(new Cell(board, axisX, axisY));
 		}
 
-		this.cellGroupedByColumn = this.cellGroupByColumn();
+		this.cellGroupedByColumn = this.cellGroupColumn();
 		this.cellGroupedByReverseColumn = this.cellGroupedByColumn.map((column) => [...column].reverse());
-		this.cellGroupedByRow = this.cellGroupByRow();
+		this.cellGroupedByRow = this.cellGroupRow();
 		this.cellGroupedByReverseRow = this.cellGroupedByRow.map((row) => [...row].reverse());
 	}
 
-	cellRandomEmpty() {
-		const cellEmpty = this.cells.filter((cell) => cell.isEmpty());
-		const cellIndex = Math.floor(Math.random() * cellEmpty.length);
-		return cellEmpty[cellIndex];
+	cellRandomForTile() {
+		const cellElement = this.cells.filter((cell) => cell.isEmpty());
+		const cellIndex = Math.floor(Math.random() * cellElement.length);
+		return cellElement[cellIndex];
 	}
 
-	cellGroupByColumn() {
-		return this.cells.reduce((elementCell, cell) => {
-			elementCell[cell.x] = elementCell[cell.x] || [];
-			elementCell[cell.x][cell.y] = cell;
-			return elementCell;
+	cellGroupColumn() {
+		return this.cells.reduce((cellGroup, cell) => {
+			cellGroup[cell.x] = cellGroup[cell.x] || [];
+			cellGroup[cell.x][cell.y] = cell;
+			return cellGroup;
 		}, []);
 	}
-	cellGroupByRow() {
-		return this.cells.reduce((elementCell, cell) => {
-			elementCell[cell.y] = elementCell[cell.y] || [];
-			elementCell[cell.y][cell.x] = cell;
-			return elementCell;
+
+	cellGroupRow() {
+		return this.cells.reduce((cellGroup, cell) => {
+			cellGroup[cell.y] = cellGroup[cell.y] || [];
+			cellGroup[cell.y][cell.x] = cell;
+			return cellGroup;
 		}, []);
 	}
 }
-
 export default Grid;

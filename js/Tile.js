@@ -1,18 +1,40 @@
 class Tile {
-	constructor(layout) {
+	constructor(board) {
 		this.tileElement = document.createElement('div');
 		this.tileElement.classList.add('tile');
-		layout.append(this.tileElement);
-		this.value(2);
+		this.setValue(2);
+		board.append(this.tileElement);
 	}
 
-	value(value) {
-		this.tileElement.textContent = value;
+	setValue(value) {
+		this.value = value;
+		this.tileElement.textContent = this.value;
+
+		const lightness = Math.log2(value) * 9;
+
+		// this.tileElement.style.setProperty('--tile-background-index', `${lightness}%`);
+		// this.tileElement.style.setProperty('--text-color-index', `${lightness < 50 ? 10 : 50}%`);
 	}
 
-	setXY(x, y) {
-		this.tileElement.style.setProperty('--x', x);
-		this.tileElement.style.setProperty('--y', y);
+	setAxis(axisX, axisY) {
+		this.tileElement.style.setProperty('--x', axisX);
+		this.tileElement.style.setProperty('--y', axisY);
+	}
+
+	removeForDOM() {
+		this.tileElement.remove();
+	}
+
+	witeForTransitionEnd() {
+		new Promise((res) => {
+			this.tileElement.addEventListener('transitionend', res, { once: true });
+		});
+	}
+
+	witeForAnimationEnd() {
+		new Promise((res) => {
+			this.tileElement.addEventListener('transitionend', res, { once: true });
+		});
 	}
 }
 

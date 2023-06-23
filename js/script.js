@@ -5,50 +5,70 @@ const board = document.getElementById('grid-board');
 
 const grid = new Grid(board);
 
-grid.cellRandomEmpty().linkTile(new Tile(board));
-// grid.cellRandomEmpty().linkTile(new Tile(board));
+grid.cellRandomForTile().linkTile(new Tile(board));
+grid.cellRandomForTile().linkTile(new Tile(board));
 
-setupInputArrow();
+upsetInput();
 
-function setupInputArrow() {
-	window.addEventListener('keyup', handleBoard, { once: true });
+function upsetInput() {
+	window.addEventListener(
+		'keyup',
+		async (event) => {
+			switch (event.key) {
+				case 'ArrowUp':
+					if (!cenMoveUp()) return upsetInput();
+					await slideTile(grid.cellGroupedByColumn);
+					break;
+
+				case 'ArrowDown':
+					if (!cenMoveDown()) return upsetInput();
+					await slideTile(grid.cellGroupedByReverseColumn);
+					break;
+
+				case 'ArrowLeft':
+					if (!cenMoveLeft()) return upsetInput();
+					await slideTile(grid.cellGroupedByRow);
+					break;
+
+				case 'ArrowRight':
+					if (!cenMoveRight()) return upsetInput();
+					await slideTile(grid.cellGroupedByReverseRow);
+					break;
+
+				default:
+					return upsetInput();
+			}
+			const newTile = new Tile(board);
+			grid.cellRandomForTile().linkTile(newTile);
+
+			if (!cenMoveUp() && !cenMoveDown() && !cenMoveLeft() && !cenMoveRight()) {
+				await newTile.witeForAnimationEnd();
+				alert('try again');
+				return;
+			}
+
+			upsetInput();
+		},
+		{ once: true }
+	);
 }
 
-function handleBoard(event) {
-	switch (event.key) {
-		case 'ArrowUp':
-			slideTile(grid.cellGroupedByColumn);
-			break;
-		case 'ArrowDown':
-			slideTile(grid.cellGroupedByReverseColumn);
-			break;
-		case 'ArrowLeft':
-			slideTile(grid.cellGroupedByRow);
-			break;
-		case 'ArrowRight':
-			slideTile(grid.cellGroupedByReverseRow);
-			break;
+async function slideTile(cellGroup) {
+	let promises = [];
+	cellGroup.forEach((group) => slideTileInGroup(group, promises));
 
-		default:
-			return setupInputArrow();
-	}
+	await Promise.all(promises);
 
-	// const newTile = new Tile(board);
-	// grid.cellRandomEmpty().linkTile(newTile);
-
-	setupInputArrow();
+	grid.cells.forEach((cell) => {
+		cell.hasTileForMarge() && cell.margeTile();
+	});
 }
 
-function slideTile(cellGroup) {
-	cellGroup.forEach((group) => slideTileInGroup(group));
-}
-
-function slideTileInGroup(group) {
+function slideTileInGroup(group, promises) {
 	for (let i = 1; i < group.length; i++) {
 		if (group[i].isEmpty()) continue;
 
 		const cellWithTile = group[i];
-
 		let targetCell;
 		let j = i - 1;
 
@@ -59,11 +79,40 @@ function slideTileInGroup(group) {
 
 		if (!targetCell) continue;
 
+		promises.push(cellWithTile.linkedTile.witeForTransitionEnd());
+
 		if (targetCell.isEmpty()) {
 			targetCell.linkTile(cellWithTile.linkedTile);
 		} else {
-			targetCell.linkTile(cellWithTile.linkedTile);
+			targetCell.linkTileForMarge(cellWithTile.linkedTile);
 		}
 		cellWithTile.unlinkTile();
 	}
+}
+
+function cenMoveUp() {
+	return cenMove(grid.cellGroupedByColumn);
+}
+function cenMoveDown() {
+	return cenMove(grid.cellGroupedByReverseColumn);
+}
+function cenMoveLeft() {
+	return cenMove(grid.cellGroupedByRow);
+}
+function cenMoveRight() {
+	return cenMove(grid.cellGroupedByReverseRow);
+}
+
+function cenMove(cellGroup) {
+	return cellGroup.some((group) => cenMoveInGroup(group));
+}
+
+function cenMoveInGroup(group) {
+	return group.some((cell, index) => {
+		if (index === 0) return false;
+		if (cell.isEmpty()) return false;
+
+		const targetCell = group[index - 1];
+		return targetCell.cenAccept(cell.linkedTile);
+	});
 }

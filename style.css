@@ -4,8 +4,8 @@
 	--padding-10: 10px;
 	--border-radius-10: 10px;
 	--tile-size: 100px;
-	--color-text: hsl(360, 100%, var(--text-color-index));
-	--background-tile: hsl(0, 0%, var(--tile-background-index));
+	--color-text: ;
+	--background-tile: ;
 }
 
 * {
@@ -51,8 +51,8 @@ body {
 	height: var(--tile-size);
 	margin: var(--padding-10);
 	border-radius: var(--border-radius-10);
-	background-color: var(--background-tile);
-	color: var(--color-text);
+	background-color: hsl(0, 0%, var(--tile-background-index));
+	color: hsl(360, 100%, var(--text-color-index));
 	display: flex;
 	align-items: center;
 	justify-content: center;
