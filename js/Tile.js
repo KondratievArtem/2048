@@ -10,10 +10,10 @@ class Tile {
 		this.value = value;
 		this.tileElement.textContent = this.value;
 
-		const lightness = Math.log2(value) * 9;
+		const lightness = 100 - Math.log2(value) * 9;
 
-		// this.tileElement.style.setProperty('--tile-background-index', `${lightness}%`);
-		// this.tileElement.style.setProperty('--text-color-index', `${lightness < 50 ? 10 : 50}%`);
+		this.tileElement.style.setProperty('--tile-background-index', `${lightness}%`);
+		this.tileElement.style.setProperty('--text-color-index', `${lightness < 50 ? 10 : 50}%`);
 	}
 
 	setAxis(axisX, axisY) {
@@ -26,14 +26,14 @@ class Tile {
 	}
 
 	witeForTransitionEnd() {
-		new Promise((res) => {
+		return new Promise((res) => {
 			this.tileElement.addEventListener('transitionend', res, { once: true });
 		});
 	}
 
 	witeForAnimationEnd() {
-		new Promise((res) => {
-			this.tileElement.addEventListener('transitionend', res, { once: true });
+		return new Promise((res) => {
+			this.tileElement.addEventListener('animationend', res, { once: true });
 		});
 	}
 }

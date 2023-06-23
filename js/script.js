@@ -44,6 +44,7 @@ function upsetInput() {
 			if (!cenMoveUp() && !cenMoveDown() && !cenMoveLeft() && !cenMoveRight()) {
 				await newTile.witeForAnimationEnd();
 				alert('try again');
+				window.location.reload();
 				return;
 			}
 
