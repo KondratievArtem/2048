@@ -7,7 +7,29 @@
 		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
+		<div class="dashboard">
+			<div class="info">
+				<div class="block">
+					<div class="logo">2048</div>
+					<div class="item">
+						<div id="score">
+							<p>score</p>
+						</div>
+						<div id="best-score">
+							<p>best</p>
+						</div>
+					</div>
+				</div>
+				<div class="block">
+					<div class="step-back">
+						<img src="./img/216436_arrow_back_icon.svg" alt="back" />
+					</div>
+					<a href="#" class="restart">New Game</a>
+				</div>
+			</div>
+		</div>
 		<div id="grid-board"></div>
+		<script src="./js/lodash.js"></script>
 		<script src="./js/script.js" type="module"></script>
 	</body>
 </html>

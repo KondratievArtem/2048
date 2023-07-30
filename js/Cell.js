@@ -20,27 +20,27 @@ class Cell {
 		this.linkedTile = null;
 	}
 
-	linkTileForMarge(tile) {
-		this.linkedTileForMarge = tile;
+	linkTileForMerge(tile) {
+		this.linkedTileForMerge = tile;
 		tile.setAxis(this.x, this.y);
 	}
 
-	unlinkTileForMarge() {
-		this.linkedTileForMarge = null;
+	unlinkTileForMerge() {
+		this.linkedTileForMerge = null;
 	}
 
-	hasTileForMarge() {
-		return !!this.linkedTileForMarge;
+	hasTileForMerge() {
+		return !!this.linkedTileForMerge;
 	}
 
 	cenAccept(newTile) {
-		return this.isEmpty() || (!this.hasTileForMarge() && this.linkedTile.value === newTile.value);
+		return this.isEmpty() || (!this.hasTileForMerge() && this.linkedTile.value === newTile.value);
 	}
 
-	margeTile() {
-		this.linkedTile.setValue(this.linkedTile.value + this.linkedTileForMarge.value);
-		this.linkedTileForMarge.removeForDOM();
-		this.unlinkTileForMarge();
+	mergeTile() {
+		this.linkedTile.setValue(this.linkedTile.value + this.linkedTileForMerge.value);
+		this.linkedTileForMerge.removeForDOM();
+		this.unlinkTileForMerge();
 	}
 }
 

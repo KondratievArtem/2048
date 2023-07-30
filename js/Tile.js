@@ -9,11 +9,10 @@ class Tile {
 	setValue(value) {
 		this.value = value;
 		this.tileElement.textContent = this.value;
-
-		const lightness = 100 - Math.log2(value) * 9;
-
-		this.tileElement.style.setProperty('--tile-background-index', `${lightness}%`);
-		this.tileElement.style.setProperty('--text-color-index', `${lightness < 50 ? 10 : 50}%`);
+		if (this.value < 2048) {
+			if (this.tileElement.classList.contains(`tile-${this.value / 2}`)) this.tileElement.classList.remove(`tile-${this.value / 2}`);
+			this.tileElement.classList.add(`tile-${this.value}`);
+		}
 	}
 
 	setAxis(axisX, axisY) {

@@ -1,43 +1,70 @@
-import Grid from './Layout.js';
+import Grid from './Grid.js';
 import Tile from './Tile.js';
+import Score from './Score.js';
+import BestScore from './BestScore.js';
+import Save from './Save.js';
+import History from './History.js';
 
 const board = document.getElementById('grid-board');
+const score = document.querySelector('#score');
+const best = document.querySelector('#best-score');
+const restart = document.querySelector('.restart');
+const stepBack = document.querySelector('.step-back');
 
 const grid = new Grid(board);
+const scoreClass = new Score(score);
+const bestScore = new BestScore(best);
+const save = new Save();
+const history = new History();
 
 grid.cellRandomForTile().linkTile(new Tile(board));
 grid.cellRandomForTile().linkTile(new Tile(board));
 
-upsetInput();
+if (!localStorage.getItem('currentCells')) {
+	save.saveCells(grid.cells);
+	save.setLS();
+	history.setValueCells(save.value);
+}
 
-function upsetInput() {
+if (!!localStorage.getItem('bestScore')) bestScore.getLocalStorage();
+if (!!localStorage.getItem('score')) scoreClass.getLS();
+if (!!localStorage.getItem('currentCells')) {
+	save.getLS();
+	newGrid(save.value);
+}
+
+startGame();
+
+function startGame() {
 	window.addEventListener(
 		'keyup',
 		async (event) => {
 			switch (event.key) {
 				case 'ArrowUp':
-					if (!cenMoveUp()) return upsetInput();
+					if (!cenMoveUp()) return startGame();
 					await slideTile(grid.cellGroupedByColumn);
 					break;
 
 				case 'ArrowDown':
-					if (!cenMoveDown()) return upsetInput();
+					if (!cenMoveDown()) return startGame();
 					await slideTile(grid.cellGroupedByReverseColumn);
 					break;
 
 				case 'ArrowLeft':
-					if (!cenMoveLeft()) return upsetInput();
+					if (!cenMoveLeft()) return startGame();
 					await slideTile(grid.cellGroupedByRow);
 					break;
 
 				case 'ArrowRight':
-					if (!cenMoveRight()) return upsetInput();
+					if (!cenMoveRight()) return startGame();
 					await slideTile(grid.cellGroupedByReverseRow);
 					break;
 
 				default:
-					return upsetInput();
+					startGame();
+					return;
 			}
+
 			const newTile = new Tile(board);
 			grid.cellRandomForTile().linkTile(newTile);
 
@@ -48,10 +75,68 @@ function upsetInput() {
 				return;
 			}
 
-			upsetInput();
+			save.saveCells(grid.cells);
+			save.setLS();
+
+			history.setValueCells(grid.cells);
+
+			startGame();
 		},
 		{ once: true }
 	);
+}
+
+restart.onclick = () => {
+	newGame();
+	scoreClass.setCurrentValue(0);
+	grid.cellRandomForTile().linkTile(new Tile(board));
+	grid.cellRandomForTile().linkTile(new Tile(board));
+	// window.location.reload();
+};
+
+stepBack.onclick = () => {
+	backStepScore();
+	backStepCells();
+};
+
+function backStepScore() {
+	scoreClass.value = 0;
+	scoreClass.setValue(history.getLSValueScore()[0]);
+	scoreClass.setLS();
+	history.valueScore = [];
+}
+
+function backStepCells() {
+	newGrid(history.getLSValueCells()[0]);
+	save.saveCells(history.getLSValueCells()[0]);
+	save.setLS();
+	// history.setValueCells(save.value);
+	// history.setLSValueCells();
+}
+
+function newGrid(value) {
+	for (let i = 0; i < grid.cells.length; i++) {
+		if (grid.cells[i].linkedTile) {
+			grid.cells[i].linkedTile.removeForDOM();
+			grid.cells[i].unlinkTile();
+		}
+
+		for (let j = 0; j < value.length; j++) {
+			if (grid.cells[i].x === value[j].x && grid.cells[i].y === value[j].y) {
+				grid.cells[i].linkTile(new Tile(board));
+				grid.cells[i].linkedTile.setValue(value[j].linkedTile.value);
+			}
+		}
+	}
+}
+
+function newGame() {
+	for (let i = 0; i < grid.cells.length; i++) {
+		if (grid.cells[i].linkedTile) {
+			grid.cells[i].linkedTile.removeForDOM();
+			grid.cells[i].unlinkTile();
+		}
+	}
 }
 
 async function slideTile(cellGroup) {
@@ -61,8 +146,19 @@ async function slideTile(cellGroup) {
 	await Promise.all(promises);
 
 	grid.cells.forEach((cell) => {
-		cell.hasTileForMarge() && cell.margeTile();
+		if (cell.hasTileForMerge()) {
+			let count = cell.linkedTile.value + cell.linkedTileForMerge.value;
+			scoreClass.setValue(count);
+			cell.mergeTile();
+			scoreClass.setLS();
+			history.setValueScore(scoreClass.value);
+		}
 	});
+
+	if (scoreClass.value >= bestScore.value) {
+		bestScore.setValue(scoreClass.value);
+		bestScore.setLocalStorage(scoreClass);
+	}
 }
 
 function slideTileInGroup(group, promises) {
@@ -85,7 +181,7 @@ function slideTileInGroup(group, promises) {
 		if (targetCell.isEmpty()) {
 			targetCell.linkTile(cellWithTile.linkedTile);
 		} else {
-			targetCell.linkTileForMarge(cellWithTile.linkedTile);
+			targetCell.linkTileForMerge(cellWithTile.linkedTile);
 		}
 		cellWithTile.unlinkTile();
 	}
