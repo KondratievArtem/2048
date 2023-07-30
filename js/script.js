@@ -75,6 +75,7 @@ function startGame() {
 				scoreClass.setCurrentValue(0);
 				grid.cellRandomForTile().linkTile(new Tile(board));
 				grid.cellRandomForTile().linkTile(new Tile(board));
+				startGame();
 				return;
 			}
 
