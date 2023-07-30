@@ -71,7 +71,10 @@ function startGame() {
 			if (!cenMoveUp() && !cenMoveDown() && !cenMoveLeft() && !cenMoveRight()) {
 				await newTile.witeForAnimationEnd();
 				alert('try again');
-				window.location.reload();
+				newGame();
+				scoreClass.setCurrentValue(0);
+				grid.cellRandomForTile().linkTile(new Tile(board));
+				grid.cellRandomForTile().linkTile(new Tile(board));
 				return;
 			}
 
